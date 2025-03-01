@@ -1,0 +1,13 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Удаление статьи{% endblock %}
+
+{% block content %}
+    <div class="features">
+        <h1>Удаление статьи</h1> <!--вывод информации из файла views.py внутри шаблона-->
+        <form method="post"> <!--обрабатываем форму прямо на этой странице методом create-->
+            {% csrf_token %} <!--токен для защиты от межсайтовой подделки запроса CSRF-->
+            <button class="btn btn-success" type="submit">Удалить статью</button>
+        </form>
+    </div>
+{% endblock %}

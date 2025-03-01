@@ -1,0 +1,93 @@
+body {
+    background: darkseagreen;
+}
+
+aside {
+    float: left;
+    background: floralwhite;
+    width: 20%;
+    padding: 2.5%;
+    height: 100vh;
+    color: darkseagreen;
+    border-right: 5px solid #4d4d4d;
+}
+
+aside img {
+    width: 80px;
+    float: left;
+}
+
+aside .logo {
+    font-size: 40px;
+    margin-left: 10px;
+    font-weight: bold;
+    position: relative;
+    top: -5px;
+}
+
+aside h3 {
+    margin-top: 15px;
+    font-size: 28px;
+}
+
+aside ul {list-style: none}
+aside ul li {
+    color: darkseagreen;
+    display: block;
+    margin-top: 20px;
+    transition: transform .6s ease;
+    text-decoration: underline;
+    text-decoration-color: brown;
+}
+
+aside ul li:hover, aside ul a:hover {
+    color: brown;
+    text-decoration: none;
+    transform: scale(1.05);
+}
+
+.btn-warning {
+    background-color: brown;
+    border-color: brown;
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background-color: burlywood; /* Цвет фона при наведении */
+    border-color: burlywood; /* Цвет рамки при наведении */
+}
+
+main .features {
+    float: left;
+    color: black;
+    margin-top: 100px;
+    text-align: center;
+    width: 75%;
+}
+
+main .features h1 {font-size: 50px;}
+main .features p {max-width: 400px; margin: 20px auto}
+
+.alert-warning {
+    float: left; /*заставляет элемент "плавать" влево. Это означает, что элемент будет выравниваться по левому краю контейнера, и текст или другие элементы будут обтекать его справа.*/
+    clear: both; /*элемент не будет обтекать ни левые, ни правые "плавающие" элементы. Это полезно для предотвращения перекрытия элементов.*/
+    width: 400px; /*устанавливает ширину элемента в 400 пикселей*/
+    margin: 20px 34%; /*устанавливает внешние отступы (маржины) для элемента. 20px устанавливает верхний и нижний отступы. 34% устанавливает левый и правый отступы.*/
+    text-align: left; /*выравнивает текст внутри элемента по левому краю.*/
+}
+
+form { /*стиль к форме на вкладке добавления статьи*/
+    margin-left: 32%;
+    width: 500px;
+    margin-top: 50px;
+}
+
+.btn-info {
+    background-color: brown; /* Цвет фона кнопки */
+    border-color: brown;
+    color: #fff;}
+
+.btn-info:hover {
+    background-color: burlywood; /* Цвет фона при наведении */
+    border-color: burlywood;
+}

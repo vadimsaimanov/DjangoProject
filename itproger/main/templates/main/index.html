@@ -1,0 +1,28 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="features">
+        <h1>{{ title }}</h1> <!--вывод информации из файла views.py внутри шаблона-->
+        {% if request.user.is_authenticated %}
+        <h3>{{ request.user }}, добро пожаловать!</h3>
+            <a class="navbar-brand" href="{% url 'logout' %}">Выйти из аккаунта</a>
+            {% else  %}
+            <a class="navbar-brand" href="{% url 'login' %}">Войти в аккаунт</a>
+        {% endif %}
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit, totam.</p>
+        <button class="btn btn-warning">На страницу про нас</button> <!--bootstrap подключили стиль кнопки-->
+{#        {{ values }} <!--выводим список по названию переменной из data из views.py, ниже пишем через цикл перебираем список-->#}
+        {% for el in values %}
+            {% if el == 'Hello' %}
+                {% filter upper %} <!--ФИЛЬТР все символы приводит в верхний регистр, lower в нижний, фильтр можно к чему угодно применять-->
+                    <p>{{ el | upper }}</p> <!--фильтр можно применять и конкретно к элементу, но не к тексту-->
+                {% endfilter %}
+            {% endif %}
+        {% endfor %}
+
+        {{ obj.age }} <!--обращаемся к определенному списку к конкретному ключу из data из views.py, выводим значение-->
+    </div>
+{#    {% include 'main/test.html' %} <!--подключение кода из другого html файла-->#}
+{% endblock %}

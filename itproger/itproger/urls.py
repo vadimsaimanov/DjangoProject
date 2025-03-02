@@ -8,5 +8,6 @@ urlpatterns = [
     path('admin/', admin.site.urls), #при переходе по ссылке admin, у нас будет открывать панель администратора
     path('', include('main.urls')), #пользователь переходит на главную страницу, мы передаем запрос в urls main
     path('news/', include('news.urls')), #если пользователь будет переходить по ссылки с именем news, то мы подключаем файл urls, который находится в приложении news
-    path('ormsql/', include('ormsql.urls'))
+    path('ormsql/', include('ormsql.urls')),
+    path('accounts/', include("django.contrib.auth.urls"))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

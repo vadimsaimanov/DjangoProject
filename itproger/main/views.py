@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect #импортиреум redirect: Эта функция создаёт HTTP-ответ с перенаправлением. Она применяется для отправки браузера пользователя на другой URL-адрес. render:  Эта функция используется для отрисовки шаблона (HTML-файла) с контекстными данными (переменными, которые будут использоваться внутри шаблона) и возврата HTTP-ответа.  Это стандартный способ отображения динамического контента в веб-приложениях на Django.
 # from django.http import HttpResponse #это класс в Django, который используется для создания HTTP-ответов, которые отправляются клиенту (обычно веб-браузеру) в ответ на HTTP-запросы.
 from django.contrib.auth import authenticate, login, logout #подключаем библиотеки для логина авторизации и разлогинивания
@@ -39,3 +40,7 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('login')  # Перенаправляем на главную страницу после выхода
+
+@login_required
+def profile_view(request):
+    return render(request, 'main/profile.html')

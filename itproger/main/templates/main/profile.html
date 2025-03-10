@@ -21,7 +21,7 @@
             </div>
             <div class="flex-grow-1 ms-3">
               <h5 class="mb-1">{{ user.username }}</h5>
-              <p class="mb-2 pb-1">Senior Journalist</p>
+              <p class="mb-2 pb-1">Психолог</p>
               <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
                 <div>
                   <p class="small text-muted mb-1">Articles</p>
@@ -38,7 +38,7 @@
               </div>
               <div class="d-flex pt-1">
                 <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary me-1 flex-grow-1">Chat</button>
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary flex-grow-1">Follow</button>
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary flex-grow-1" onclick="location.href='{% url 'logout' %}?next=/main/login'">Logout</button>
               </div>
             </div>
           </div>

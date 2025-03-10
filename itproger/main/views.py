@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect #импортиреум redirect: 
 from django.contrib.auth import authenticate, login, logout #подключаем библиотеки для логина авторизации и разлогинивания
 
 def index(request): #обязательно должен быть параметр, получаем запрос request
-    print(request.user)
+    # print(request.user)
     data = { #словарь, что хотим передать в html
         'title': 'Главная страница!',
         'values': ['Some', 'Hello', '123'],
@@ -22,24 +22,6 @@ def about(request): #обязательно должен быть парамет
 
 # def notice(request): #обязательно должен быть параметр, получаем запрос request
 #     return HttpResponse("<h4>Если вы чувствуюете, что больше не можете, обратитесь по номеру ###</h4>") #возвращаем на страничку сайта ответ на запрос
-
-def user_login(request):
-    if request.method == 'POST':  # Проверяем, что запрос является POST-запросом
-        username = request.POST.get('username')  # Используем .get() для безопасного получения данных
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)  # Авторизуем пользователя
-            return redirect('home')  # Перенаправляем на главную страницу
-        else:
-            # Если аутентификация не удалась, возвращаем страницу с формой и сообщением об ошибке
-            return render(request, 'main/login.html', {'error': 'Неверный логин или пароль'})
-    # Если запрос не POST, возвращаем страницу с формой входа
-    return render(request, 'main/login.html')
-
-def user_logout(request):
-    logout(request)
-    return redirect('login')  # Перенаправляем на главную страницу после выхода
 
 @login_required
 def profile_view(request):

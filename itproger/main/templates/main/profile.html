@@ -37,8 +37,8 @@
                 </div>
               </div>
               <div class="d-flex pt-1">
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary me-1 flex-grow-1">Chat</button>
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary flex-grow-1" onclick="location.href='{% url 'logout' %}?next=/main/login'">Logout</button>
+                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary me-1 flex-grow-1">Chat</button>
+                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary flex-grow-1" onclick="document.getElementById('logout-form').submit();">Logout</button>
               </div>
             </div>
           </div>
@@ -47,5 +47,10 @@
     </div>
   </div>
 </section>
+
+<!-- Скрытая форма для выхода -->
+<form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+    {% csrf_token %}
+</form>
 </body>
 </html>

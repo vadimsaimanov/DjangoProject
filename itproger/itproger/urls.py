@@ -1,13 +1,16 @@
-from django.contrib import admin #Эта строка импортирует модуль admin из пакета django.contrib. Модуль admin предоставляет функциональность для создания административной панели Django, которая позволяет управлять данными в вашем проекте.
-from django.urls import path, include #Здесь импортируются функции path и include из модуля django.urls. path используется для создания URL-маршрутов. include позволяет включать другие файлы с URL-маршрутами (например, из других приложений), что помогает организовать код и делегировать обработку запросов.
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth.views import LoginView, LogoutView
 
-from django.conf import settings #settings предоставляет доступ к настройкам вашего Django-проекта.
-from django.conf.urls.static import static #static используется для обслуживания статических файлов (например, CSS, JavaScript, изображений) во время разработки.
 
 urlpatterns = [
-    path('admin/', admin.site.urls), #при переходе по ссылке admin, у нас будет открывать панель администратора
-    path('', include('main.urls')), #пользователь переходит на главную страницу, мы передаем запрос в urls main
-    path('news/', include('news.urls')), #если пользователь будет переходить по ссылки с именем news, то мы подключаем файл urls, который находится в приложении news
-    path('ormsql/', include('ormsql.urls')),
-    path('accounts/', include("django.contrib.auth.urls"))
+    path('admin/', admin.site.urls),
+    path('', include('main.urls')),  # Подключаем маршруты приложения main
+    path('news/', include('news.urls')),  # Подключаем маршруты приложения news
+    path('ormsql/', include('ormsql.urls')),  # Подключаем маршруты приложения ormsql
+    path('accounts/', include('django.contrib.auth.urls')),  # Встроенные маршруты для аутентификации
+    path('accounts/login/', LoginView.as_view(template_name='registration/login.html'), name='login'),  # Кастомный маршрут для логина
+    path('accounts/logout/', LogoutView.as_view(next_page='login'), name='logout'),  # Кастомный маршрут для логаута
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

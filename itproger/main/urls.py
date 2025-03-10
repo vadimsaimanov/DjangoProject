@@ -1,8 +1,10 @@
-from django.urls import path #подключаем дополнительно include, чтобы делегировать обязанностями по обработке запросов
+from django.urls import path
 from . import views
+from .views import custom_logout
 
 urlpatterns = [
-    path('', views.index, name='home'), #имя прописываем, чтобы можно было менять название ссылки
-    path('about/', views.about, name='about'),
-    path('profile/', views.profile_view, name='profile')
+    path('', views.index, name='home'),  # Главная страница
+    path('about/', views.about, name='about'),  # Страница "О нас"
+    path('profile/', views.profile_view, name='profile'),  # Страница профиля
+    path('accounts/logout/', custom_logout, name='logout'),
 ]

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .forms import RegisterForm
 
 def index(request):
     data = {
@@ -22,6 +23,10 @@ def about(request):
 def profile_view(request):
     return render(request, 'main/profile.html')
 
+@login_required
+def profile(request):
+    return render(request, 'main/profile.html')
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -38,3 +43,28 @@ def custom_logout(request):
     logout(request)
     messages.success(request, "Вы успешно вышли из системы.")
     return redirect('login')
+
+# def register(request):
+#     if request.method == 'POST':
+#         form = RegisterForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)  # Автоматически входим после регистрации
+#             return redirect('profile')  # Перенаправляем на страницу профиля
+#     else:
+#         form = RegisterForm()
+#     return render(request, 'main/register.html', {'form': form})
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            print(f"Пользователь {user.username} успешно создан.")  # Отладочное сообщение
+            login(request, user)
+            return redirect('profile')
+        else:
+            print("Форма невалидна:", form.errors)  # Отладочное сообщение
+    else:
+        form = RegisterForm()
+    return render(request, 'main/register.html', {'form': form})

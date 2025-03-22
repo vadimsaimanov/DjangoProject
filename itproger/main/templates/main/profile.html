@@ -21,7 +21,13 @@
             </div>
             <div class="flex-grow-1 ms-3">
               <h5 class="mb-1">{{ user.username }}</h5>
-              <p class="mb-2 pb-1">Психолог</p>
+              <p class="mb-2 pb-1">
+                {% if user.role == 'psychologist' %}
+                    Психолог
+                {% else %}
+                    Пользователь
+                {% endif %}
+              </p>
               <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
                 <div>
                   <p class="small text-muted mb-1">Articles</p>

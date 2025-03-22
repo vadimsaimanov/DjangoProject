@@ -4,10 +4,13 @@
 
 {% block content %}
     <div class="features">
-        <h1>{{ article.title }}</h1> <!--берем значение из views.py из класса NewsDatailView-->
+        <h1>{{ article.title }}</h1>
         <p>{{ article.date }}</p>
         <p>{{ article.full_text }}</p>
-        <a href="{% url 'news-delete' article.id %}" class="btn btn-danger">Удалить статью</a>
-        <a href="{% url 'news-update' article.id %}" class="btn btn-info">Редактировать статью</a>
+
+        {% if user == article.author or user.is_superuser %}
+            <a href="{% url 'news-update' article.id %}" class="btn btn-info">Редактировать статью</a>
+            <a href="{% url 'news-delete' article.id %}" class="btn btn-danger">Удалить статью</a>
+        {% endif %}
     </div>
 {% endblock %}

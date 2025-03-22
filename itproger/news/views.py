@@ -1,7 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect #Функция render используется для отображения HTML-шаблона и передачи контекста в него.
 from .models import Articles #импортируем модель, класс который нам нужен для работы с таблицей
 from .forms import ArticlesForm
 from django.views.generic import DetailView, UpdateView, DeleteView #на основе этого класса можно создать страницу, которая будет постоянно изменятья в зависимости от параметра в url адрессе
+from django.utils.decorators import method_decorator #позволяет применять декораторы к методам классов
+from .decorators import psychologist_required
+from django.core.exceptions import PermissionDenied
 from .forms import SearchForm
 
 # def news_home(request):
@@ -24,28 +28,46 @@ class NewsDetailView(DetailView): #полностью наследуемся о�
     template_name = 'news/details_view.html'
     context_object_name = 'article' #как ключ, по которому будем передавать запись из бд внутрь шаблона
 
-class NewsUpdateView(UpdateView):
-    model = Articles  # работаем с моделью (базой данных) Articles
+class AuthorOrAdminRequiredMixin:
+    """
+    Миксин для проверки, что пользователь является автором статьи или администратором.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        article = self.get_object()  # Получаем статью
+        if not (request.user == article.author or request.user.is_superuser):
+            raise PermissionDenied("У вас нет прав для выполнения этого действия.")
+        return super().dispatch(request, *args, **kwargs)
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(psychologist_required, name='dispatch')
+class NewsUpdateView(AuthorOrAdminRequiredMixin, UpdateView):
+    model = Articles
     template_name = 'news/news-update.html'
+    form_class = ArticlesForm
 
-    form_class = ArticlesForm #атрибут, который используется в классах представлений Django, таких как UpdateView, для указания, какую форму использовать при обработке данных.
-
-class NewsDeleteView(DeleteView):
-    model = Articles  # работаем с моделью (базой данных) Articles
+@method_decorator(login_required, name='dispatch')
+@method_decorator(psychologist_required, name='dispatch')
+class NewsDeleteView(AuthorOrAdminRequiredMixin, DeleteView):
+    model = Articles
     success_url = '/news'
     template_name = 'news/news-delete.html'
 
+@login_required
+@psychologist_required
 def create(request):
     error = ''
     if request.method == 'POST': #метод передачи данных post, исполняется когда жмем на кнопку добавить
         form = ArticlesForm(request.POST) #здесь хранятся все дданные получченные из формы которую заполнил пользователь
         if form.is_valid(): #проверяем, являются ли данные корректно заполненными, тогда сохраняем
-            form.save()
+            article = form.save(commit=False)  # Создаем объект статьи, но не сохраняем в базу
+            article.author = request.user  # Устанавливаем автора статьи
+            article.save()  # Теперь сохраняем статью в базу
             return redirect('/news') #возврат на страницу со всеми новостями
         else:
             error = 'Форма неверно заполнена'
 
-    form = ArticlesForm()#создали объект класса
+    else:
+        form = ArticlesForm()#создали объект класса
 
     data = {
         'form': form,

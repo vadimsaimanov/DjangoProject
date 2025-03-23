@@ -11,6 +11,7 @@ class Articles(models.Model): #создали класс, который нас�
     full_text = models.TextField('Статья') #в тип TextField можно вводить около 10-20 тысяч символов
     date = models.DateTimeField('Дата публикации')
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')  # Добавляем поле автора
+    views = models.PositiveIntegerField('Просмотры', default=0)  # Счетчик просмотров
 
     def __str__(self):
         return self.title #метод, определяет какая именно информация будет отображаться сама по себе

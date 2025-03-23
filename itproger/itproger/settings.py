@@ -142,3 +142,8 @@ LOGIN_REDIRECT_URL = 'profile'  # Перенаправление после ус
 LOGOUT_REDIRECT_URL = 'login'   # Перенаправление после выхода
 
 AUTH_USER_MODEL = 'main.UserProfile' #чтобы Django использовал твою кастомную модель пользователя
+
+# settings.py
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Использование базы данных для хранения сессий
+SESSION_COOKIE_AGE = 1209600  # Время жизни сессии в секундах (2 недели)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Сессия не завершается при закрытии браузера

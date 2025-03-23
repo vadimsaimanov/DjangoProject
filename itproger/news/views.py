@@ -6,6 +6,7 @@ from django.views.generic import DetailView, UpdateView, DeleteView #на осн
 from django.utils.decorators import method_decorator #позволяет применять декораторы к методам классов
 from .decorators import psychologist_required
 from django.core.exceptions import PermissionDenied
+from django.db.models import F
 from .forms import SearchForm
 
 # def news_home(request):
@@ -23,10 +24,22 @@ def news_home(request):
 
     return render(request, 'news/news_home.html', {'news': news, 'search_query': search_query})
 
-class NewsDetailView(DetailView): #полностью наследуемся от класса DetailView
-    model = Articles  # работаем с моделью (базой данных) Articles
+class NewsDetailView(DetailView):
+    model = Articles
     template_name = 'news/details_view.html'
-    context_object_name = 'article' #как ключ, по которому будем передавать запись из бд внутрь шаблона
+    context_object_name = 'article'
+
+    def get(self, request, *args, **kwargs):
+        # Получаем статью
+        self.object = self.get_object()
+
+        # Увеличиваем счетчик просмотров, если пользователь не автор статьи
+        if request.user != self.object.author:
+            Articles.objects.filter(pk=self.object.pk).update(views=F('views') + 1)
+
+        # Передаем контекст в шаблон
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
 class AuthorOrAdminRequiredMixin:
     """

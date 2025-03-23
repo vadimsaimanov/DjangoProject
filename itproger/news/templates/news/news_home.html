@@ -4,13 +4,14 @@
 
 {% block content %}
     <div class="features">
-        <h1>Новости на сайте</h1> <!--вывод информации из файла views.py внутри шаблона-->
+        <h1>Новости на сайте</h1>
 
-         <!-- Форма поиска -->
+        <!-- Форма поиска -->
         <form method="get" action="{% url 'news_home' %}" class="d-flex">
             <input type="text" name="q" placeholder="Поиск статей" value="{{ search_query }}" class="form-control me-2">
             <button type="submit" class="btn btn-warning">Найти</button>
         </form>
+
         <!-- Сообщение о результатах поиска -->
         {% if search_query %}
             <p>Результаты поиска для: <strong>{{ search_query }}</strong></p>
@@ -22,12 +23,16 @@
                 <div class="alert alert-warning">
                     <h3>{{ el.title }}</h3>
                     <p>{{ el.anons }}</p>
-                    <a href="{% url 'news-detail' el.id%}" class="btn btn-warning">Читать детальнее</a> <!--динамическая ссылка переходим по id-->
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'news-detail' el.id %}" class="btn btn-warning me-2">Читать детальнее</a>
+                        <span class="text-muted" title="Число просмотров">
+                            <i class="bi bi-eye"></i> {{ el.views }}
+                        </span>
+                    </div>
                 </div>
             {% endfor %}
         {% else %}
             <p>Статей не найдено</p>
         {% endif %}
-        {# Добавили условие #}
     </div>
 {% endblock %}

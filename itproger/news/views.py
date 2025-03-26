@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect #Функция render используется для отображения HTML-шаблона и передачи контекста в него.
-from .models import Articles #импортируем модель, класс который нам нужен для работы с таблицей
+from .models import Articles, Like  # импортируем модель, класс который нам нужен для работы с таблицей
 from .forms import ArticlesForm
 from django.views.generic import DetailView, UpdateView, DeleteView #на основе этого класса можно создать страницу, которая будет постоянно изменятья в зависимости от параметра в url адрессе
 from django.utils.decorators import method_decorator #позволяет применять декораторы к методам классов
@@ -8,6 +8,9 @@ from .decorators import psychologist_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import F
 from .forms import SearchForm
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 
 # def news_home(request):
 #     news = Articles.objects.order_by('-date')#[:4] в квадратных скобках можно указать срез, сколько отображать записей на странице #добавили все содержимое таблицы в переменную
@@ -90,3 +93,30 @@ def create(request):
     return render(request, 'news/create.html', data)
 
 
+@csrf_exempt  # Временно отключаем CSRF для тестирования
+@login_required
+@require_POST
+def like_article(request, pk):
+    try:
+        article = Articles.objects.get(pk=pk)
+        like, created = Like.objects.get_or_create(
+            user=request.user,
+            article=article
+        )
+
+        if not created:
+            like.delete()
+            article.likes_count = max(0, article.likes_count - 1)  # Не даем уйти в минус
+            liked = False
+        else:
+            article.likes_count += 1
+            liked = True
+
+        article.save()
+
+        return JsonResponse({
+            'liked': liked,
+            'likes_count': article.likes_count
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)

@@ -7,4 +7,5 @@ urlpatterns = [
     path('<int:pk>', views.NewsDetailView.as_view(), name='news-detail'), #динамически отслеживаем целочисленное число, назовем его pk первичный ключ, пробелы не ставить между двоиточием инт и pk. В этот раз мы не метод вызываем, а класс. Обязательно дописываем метод as_view(), иначе ошибка.
     path('<int:pk>/update', views.NewsUpdateView.as_view(), name='news-update'),
     path('<int:pk>/delete', views.NewsDeleteView.as_view(), name='news-delete'),
+    path('<int:pk>/like/', views.like_article, name='like-article'),
 ]

@@ -5,8 +5,17 @@
 {% block content %}
     <div class="features">
         <h1>{{ article.title }}</h1>
-    <div class="text-muted" title="Число просмотров">
-            <i class="bi bi-eye"></i> {{ article.views }}
+
+        <!-- Добавляем блок для лайков -->
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <span class="text-muted" title="Просмотры">
+                <i class="bi bi-eye"></i> {{ article.views }}
+            </span>
+
+            <button class="btn-like btn p-0" data-article-id="{{ article.id }}">
+                <i class="bi {% if request.user in article.likes.all %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
+                <span class="likes-count">{{ article.likes_count }}</span>
+            </button>
         </div>
 
         <p>{{ article.date }}</p>
@@ -16,6 +25,7 @@
             <a href="{% url 'news-update' article.id %}" class="btn btn-info">Редактировать статью</a>
             <a href="{% url 'news-delete' article.id %}" class="btn btn-danger">Удалить статью</a>
         {% endif %}
-    <a href="{% url 'news_home' %}" class="btn btn-warning">Назад к списку статей</a>
+
+        <a href="{% url 'news_home' %}" class="btn btn-warning">Назад к списку статей</a>
     </div>
 {% endblock %}

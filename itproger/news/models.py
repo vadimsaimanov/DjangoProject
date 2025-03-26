@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.deletion import CASCADE
+from django.contrib.auth.models import User #для лайка
 
 User = get_user_model()  # Получаем модель пользователя
 
@@ -12,6 +13,7 @@ class Articles(models.Model): #создали класс, который нас�
     date = models.DateTimeField('Дата публикации')
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')  # Добавляем поле автора
     views = models.PositiveIntegerField('Просмотры', default=0)  # Счетчик просмотров
+    likes_count = models.PositiveIntegerField(default=0) #лайк поле
 
     def __str__(self):
         return self.title #метод, определяет какая именно информация будет отображаться сама по себе
@@ -22,3 +24,11 @@ class Articles(models.Model): #создали класс, который нас�
     class Meta: #переделываем название таблиц в панели админа
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    article = models.ForeignKey(Articles, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'article')  # Один пользователь - один лайк на статью

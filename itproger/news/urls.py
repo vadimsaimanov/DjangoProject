@@ -8,4 +8,6 @@ urlpatterns = [
     path('<int:pk>/update', views.NewsUpdateView.as_view(), name='news-update'),
     path('<int:pk>/delete', views.NewsDeleteView.as_view(), name='news-delete'),
     path('<int:pk>/like/', views.like_article, name='like-article'),
+    path('comment/<int:pk>/like/', views.like_comment, name='like-comment'),
+    path('comment/<int:pk>/dislike/', views.dislike_comment, name='dislike-comment'),
 ]

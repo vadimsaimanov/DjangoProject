@@ -1,34 +1,53 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models.deletion import CASCADE
-from django.contrib.auth.models import User #для лайка
+from django.core.exceptions import ValidationError  # Импортируем ValidationError
+from django.utils import timezone
 
-User = get_user_model()  # Получаем модель пользователя
+User = get_user_model()
 
-class Articles(models.Model): #создали класс, который наследуется от models, однако надо Наследование от models.Model: Вместо наследования от models, вы должны наследовать от models.Model. Это базовый класс для всех моделей в Django.
+class Articles(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField('Название', max_length=50, default='Новость') #создали поле название, первый параметр это подпись поля 'Название, в переменную вносим туда строку с ограничением по числу вводимых символов, если пользователь ничего не введет в поле, то будет задано значение по умолчанию
-    anons = models.CharField('Анонс', max_length=250) #CharField тип имеет максимальную длину в 250 символов, подходит для короткой информации
-    full_text = models.TextField('Статья') #в тип TextField можно вводить около 10-20 тысяч символов
+    title = models.CharField('Название', max_length=50, default='Новость')
+    anons = models.CharField('Анонс', max_length=250)
+    full_text = models.TextField('Статья')
     date = models.DateTimeField('Дата публикации')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')  # Добавляем поле автора
-    views = models.PositiveIntegerField('Просмотры', default=0)  # Счетчик просмотров
-    likes_count = models.PositiveIntegerField(default=0) #лайк поле
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
+    views = models.PositiveIntegerField('Просмотры', default=0)
+    likes_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return self.title #метод, определяет какая именно информация будет отображаться сама по себе
+        return self.title
 
-    def  get_absolute_url(self):
-        return f'/news/{self.id}' #возвращение к той записи, которую обновляли
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
 
-    class Meta: #переделываем название таблиц в панели админа
+    class Meta:
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    article = models.ForeignKey(Articles, on_delete=models.CASCADE, related_name='likes')
+    article = models.ForeignKey(Articles, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'article')  # Один пользователь - один лайк на статью
+        unique_together = ('user', 'article')
+
+
+class Comment(models.Model):
+    article = models.ForeignKey(Articles, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField('Текст комментария')
+    created_date = models.DateTimeField('Дата создания', default=timezone.now)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    likes = models.ManyToManyField(User, related_name='comment_likes', blank=True)
+    dislikes = models.ManyToManyField(User, related_name='comment_dislikes', blank=True)
+
+    class Meta:
+        ordering = ['created_date']
+
+    def get_reply_count(self):
+        return self.replies.count()
+
+    def get_all_replies(self):
+        return self.replies.all().select_related('author').prefetch_related('likes', 'dislikes')

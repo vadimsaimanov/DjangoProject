@@ -3,42 +3,40 @@
 {% block title %}Новости на сайте{% endblock %}
 
 {% block content %}
-    <div class="features">
-        <h1>Новости на сайте</h1>
+<div class="features">
+    <h1>Новости на сайте</h1>
 
-        <!-- Форма поиска -->
-        <form method="get" action="{% url 'news_home' %}" class="d-flex">
-            <input type="text" name="q" placeholder="Поиск статей" value="{{ search_query }}" class="form-control me-2">
-            <button type="submit" class="btn btn-warning">Найти</button>
-        </form>
+    <!-- Форма поиска -->
+    <form method="get" action="{% url 'news_home' %}" class="d-flex">
+        <input type="text" name="q" placeholder="Поиск статей" value="{{ search_query }}" class="form-control me-2">
+        <button type="submit" class="btn btn-warning">Найти</button>
+    </form>
 
-        <!-- Сообщение о результатах поиска -->
-        {% if search_query %}
-            <p>Результаты поиска для: <strong>{{ search_query }}</strong></p>
-        {% endif %}
+    <!-- Сообщение о результатах поиска -->
+    {% if search_query %}
+        <p>Результаты поиска для: <strong>{{ search_query }}</strong></p>
+    {% endif %}
 
-        <!-- Список статей -->
-        {% if news %}
-            {% for el in news %}
-            <div class="alert alert-warning">
-                <h3>{{ el.title }}</h3>
-                <p>{{ el.anons }}</p>
-                <div class="d-flex align-items-center gap-3">
-                    <a href="{% url 'news-detail' el.id %}" class="btn btn-warning">Читать</a>
-
-                    <span class="text-muted" title="Просмотры">
-                        <i class="bi bi-eye"></i> {{ el.views }}
-                    </span>
-
-                    <button class="btn-like btn p-0" data-article-id="{{ el.id }}">
-                        <i class="bi {% if request.user in el.likes.all %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
-                        <span class="likes-count">{{ el.likes_count }}</span>
-                    </button>
-                </div>
+    <!-- Список статей -->
+    {% if news %}
+        {% for el in news %}
+        <div class="alert alert-warning">
+            <h3>{{ el.title }}</h3>
+            <p>{{ el.anons }}</p>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{% url 'news-detail' el.id %}" class="btn btn-warning">Читать</a>
+                <span class="text-muted" title="Просмотры">
+                    <i class="bi bi-eye"></i> {{ el.views }}
+                </span>
+                <button class="btn-like btn p-0" data-article-id="{{ el.id }}">
+                    <i class="bi {% if request.user in el.likes.all %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
+                    <span class="likes-count">{{ el.likes_count }}</span>
+                </button>
             </div>
-            {% endfor %}
-        {% else %}
-            <p>Статей не найдено</p>
-        {% endif %}
-    </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Статей не найдено</p>
+    {% endif %}
+</div>
 {% endblock %}

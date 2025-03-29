@@ -1,3 +1,4 @@
+/* Основные стили */
 body {
     background: floralwhite;
 }
@@ -30,7 +31,10 @@ aside h3 {
     font-size: 28px;
 }
 
-aside ul {list-style: none}
+aside ul {
+    list-style: none;
+}
+
 aside ul li {
     color: darkseagreen;
     display: block;
@@ -53,8 +57,8 @@ aside ul li:hover, aside ul a:hover {
 }
 
 .btn-warning:hover {
-    background-color: burlywood; /* Цвет фона при наведении */
-    border-color: burlywood; /* Цвет рамки при наведении */
+    background-color: burlywood;
+    border-color: burlywood;
 }
 
 main .features {
@@ -65,34 +69,41 @@ main .features {
     width: 75%;
 }
 
-main .features h1 {font-size: 50px;}
-main .features p {max-width: 400px; margin: 20px auto}
-
-.alert-warning {
-    float: left; /*заставляет элемент "плавать" влево. Это означает, что элемент будет выравниваться по левому краю контейнера, и текст или другие элементы будут обтекать его справа.*/
-    clear: both; /*элемент не будет обтекать ни левые, ни правые "плавающие" элементы. Это полезно для предотвращения перекрытия элементов.*/
-    width: 400px; /*устанавливает ширину элемента в 400 пикселей*/
-    margin: 20px 34%; /*устанавливает внешние отступы (маржины) для элемента. 20px устанавливает верхний и нижний отступы. 34% устанавливает левый и правый отступы.*/
-    text-align: left; /*выравнивает текст внутри элемента по левому краю.*/
+main .features h1 {
+    font-size: 50px;
 }
 
-form { /*стиль к форме на вкладке добавления статьи*/
+main .features p {
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.alert-warning {
+    float: left;
+    clear: both;
+    width: 400px;
+    margin: 20px 34%;
+    text-align: left;
+}
+
+form {
     margin-left: 32%;
     width: 500px;
     margin-top: 50px;
 }
 
 .btn-info {
-    background-color: brown; /* Цвет фона кнопки */
+    background-color: brown;
     border-color: brown;
-    color: #fff;}
+    color: #fff;
+}
 
 .btn-info:hover {
-    background-color: burlywood; /* Цвет фона при наведении */
+    background-color: burlywood;
     border-color: burlywood;
 }
 
-/* Стили для формы регистрации */
+/* Регистрация */
 .container {
     margin-top: 50px;
     display: flex;
@@ -133,7 +144,7 @@ form { /*стиль к форме на вкладке добавления ст�
     text-decoration: none;
 }
 
-/* Стили для модального окна */
+/* Модальные окна */
 .modal-content {
     border-radius: 10px;
 }
@@ -166,7 +177,7 @@ form { /*стиль к форме на вкладке добавления ст�
     cursor: pointer;
 }
 
-/* Адаптивные стили */
+/* Адаптация */
 @media (max-width: 768px) {
     .container {
         padding: 10px;
@@ -185,13 +196,13 @@ form { /*стиль к форме на вкладке добавления ст�
     white-space: nowrap;
 }
 
-.container .col-md-6 form { /*для выравнивания формы регистрации*/
+.container .col-md-6 form {
     width: 100%;
 }
 
-/* Стили для навигационной панели */
+/* Навигационная панель */
 .navbar {
-    background-color: #343a40 !important; /* Цвет фона */
+    background-color: #343a40 !important;
     padding: 10px 0;
 }
 
@@ -212,10 +223,9 @@ form { /*стиль к форме на вкладке добавления ст�
 }
 
 .nav-link:hover {
-    color: #007bff !important; /* Цвет при наведении */
+    color: #007bff !important;
 }
 
-/* Адаптивные стили для навигационной панели */
 @media (max-width: 768px) {
     .navbar-brand {
         font-size: 20px;
@@ -236,4 +246,689 @@ form { /*стиль к форме на вкладке добавления ст�
     0% { transform: scale(1); }
     50% { transform: scale(1.3); }
     100% { transform: scale(1); }
+}
+
+/* Комментарии */
+#id_text {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+/* Анимация кнопки отправки */
+.btn-primary {
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-1px);
+}
+
+/* Стилизация карточки комментария */
+.comments-list .card {
+    border-left: 3px solid #0d6efd;
+}
+
+/* Статья */
+.article-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.article-content {
+    margin-bottom: 40px;
+}
+
+.article-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.article-text {
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.article-actions {
+    margin: 20px 0;
+}
+
+/* Блок комментариев */
+.comments-section {
+    margin-top: 50px;
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+}
+
+.comments-title {
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Форма комментария */
+.comment-form-container {
+    margin-bottom: 30px;
+}
+
+.comment-input textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.comment-input textarea:focus {
+    outline: none;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.real-comment-form textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+/* Список комментариев */
+.comments-list {
+    margin-top: 20px;
+}
+
+.comment-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.comment-author {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.comment-role {
+    color: #6c757d;
+    font-size: 0.8rem;
+    background: #f1f1f1;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.comment-date {
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.comment-text {
+    line-height: 1.5;
+    color: #333;
+}
+
+.no-comments {
+    color: #6c757d;
+    text-align: center;
+    padding: 20px;
+}
+
+.back-link {
+    margin-top: 40px;
+    text-align: center;
+}
+
+/* Анимации */
+.btn-primary {
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.comment-card {
+    transition: transform 0.2s ease;
+}
+
+.comment-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Кнопка "Назад" */
+.btn-back {
+    font-size: 1.8rem;
+    color: #212529;
+    padding: 0.3rem 0.5rem;
+    transition: all 0.2s ease;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-back:hover {
+    color: #0d6efd;
+    transform: translateX(-3px);
+}
+
+/* Заголовок статьи */
+.article-title {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 1rem;
+    color: #333;
+}
+
+/* Стили для вложенных комментариев */
+.reply-card {
+    margin-left: 40px;
+    margin-top: 15px;
+    border-left: 3px solid #6c757d;
+    padding-left: 15px;
+    background-color: #f9f9f9;
+}
+
+.nested-reply {
+    margin-left: 30px;
+    border-left: 2px solid #adb5bd;
+}
+
+.reply-to-message {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.reply-to {
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+/* Кнопки управления ответами */
+.btn-toggle-replies {
+    color: #6c757d;
+    font-size: 0.8rem;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.btn-toggle-replies:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .article-container {
+        padding: 15px;
+    }
+
+    .reply-card {
+        margin-left: 20px;
+    }
+
+    .comment-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .article-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+/* Лайки/дизлайки */
+.comment-votes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.btn-like-comment, .btn-dislike-comment {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.btn-like-comment i {
+    color: #28a745;
+    font-size: 1rem;
+}
+
+.btn-dislike-comment i {
+    color: #dc3545;
+    font-size: 1rem;
+}
+
+.btn-like-comment:hover i {
+    transform: scale(1.1);
+}
+
+.btn-dislike-comment:hover i {
+    transform: scale(1.1);
+}
+
+.likes-count {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Формы комментариев */
+.real-comment-form {
+    width: 100%;
+    margin: 15px 0;
+}
+
+.real-comment-form textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.reply-form-container {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border-left: 3px solid #6c757d;
+}
+
+/* Кнопки комментариев */
+.comment-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Индикатор загрузки */
+.spinner-border {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.nested-reply {
+    margin-left: 1.5rem;
+    border-left: 2px solid #adb5bd;
+}
+
+.reply-to-message {
+    margin: 5px 0;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.comment-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.reply-form {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* Исправление вылезания текста */
+.alert-warning {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+/* Комментарии */
+.comment-card {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fff;
+}
+
+.reply-card {
+    margin-left: 40px;
+    margin-top: 15px;
+    border-left: 3px solid #6c757d;
+    padding-left: 15px;
+    background: #f8f9fa;
+}
+
+.nested-reply {
+    margin-left: 30px;
+    border-left: 2px solid #adb5bd;
+    padding-left: 15px;
+    background: #f1f1f1;
+}
+
+.reply-to-message {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 5px 0;
+}
+
+.reply-to {
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+/* Формы */
+.reply-form-container {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.real-comment-form textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+/* Кнопки */
+.btn-toggle-replies {
+    color: #6c757d;
+    font-size: 0.85rem;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-toggle-replies:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.comment-votes {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Анимации */
+.bi-heart-fill, .bi-hand-thumbs-up-fill, .bi-hand-thumbs-down-fill {
+    transition: all 0.2s ease;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .reply-card {
+        margin-left: 20px;
+    }
+    .nested-reply {
+        margin-left: 15px;
+    }
+}
+/* Добавьте эти стили в конец файла */
+.comment-card {
+    transition: all 0.2s ease;
+    margin-bottom: 15px;
+}
+
+.reply-card {
+    margin-left: 40px;
+    margin-top: 15px;
+    border-left: 3px solid #6c757d;
+    padding-left: 15px;
+    background-color: #f8f9fa;
+}
+
+.nested-reply {
+    margin-left: 30px;
+    border-left: 2px solid #adb5bd;
+    background-color: #f1f1f1;
+}
+
+.reply-form-container {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border-left: 3px solid #6c757d;
+}
+
+.replies-container {
+    margin-top: 10px;
+}
+
+.btn-reply {
+    color: #0d6efd;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.btn-reply:hover {
+    text-decoration: underline;
+}
+
+.btn-toggle-replies {
+    color: #6c757d;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.btn-toggle-replies:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+.comment-votes {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: auto;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.reply-to-message {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.reply-to {
+    font-weight: bold;
+    color: #0d6efd;
+}
+/* Улучшенные стили для комментариев */
+.replies-container {
+    margin-top: 10px;
+    padding-left: 20px;
+    border-left: 2px solid #eee;
+}
+
+.reply-card {
+    margin-top: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-like-comment, .btn-dislike-comment {
+    background: none;
+    border: none;
+    padding: 0 5px;
+    cursor: pointer;
+}
+
+.btn-like-comment i {
+    color: #28a745;
+}
+
+.btn-dislike-comment i {
+    color: #dc3545;
+}
+
+.btn-like-comment:hover i, .btn-dislike-comment:hover i {
+    transform: scale(1.1);
+}
+
+[data-has-listener] {
+    /* Стиль для отладки, можно удалить */
+    /* outline: 1px solid red; */
+}
+/* Улучшенные стили для комментариев */
+.comment-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background: #fff;
+}
+
+.reply-card {
+    margin-left: 2rem;
+    margin-top: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+.replies-container {
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.reply-form-container {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.comment-votes {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-like-comment i.bi-hand-thumbs-up-fill {
+    color: #28a745;
+}
+
+.btn-dislike-comment i.bi-hand-thumbs-down-fill {
+    color: #dc3545;
+}
+
+/* Фикс для Firefox - отключение анимаций при уменьшении производительности */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+/* Улучшенные стили для комментариев */
+.comment-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background: #fff;
+}
+
+.reply-card {
+    margin-left: 40px;
+    margin-top: 15px;
+    border-left: 3px solid #6c757d;
+    padding-left: 15px;
+    background-color: #f8f9fa;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.comment-votes {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-like-comment i.bi-hand-thumbs-up-fill {
+    color: #28a745;
+}
+
+.btn-dislike-comment i.bi-hand-thumbs-down-fill {
+    color: #dc3545;
+}
+
+/* Фикс для производительности в Firefox */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
 }

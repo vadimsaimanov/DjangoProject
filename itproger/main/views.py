@@ -19,6 +19,15 @@ def index(request):
 def about(request):
     return render(request, 'main/about.html')
 
+def test(request):
+    return render(request, 'main/test.html')
+
+def help(request):
+    return render(request, 'main/help.html')
+
+def searchpsy(request):
+    return render(request, 'main/searchpsy.html')
+
 @login_required
 def profile_view(request):
     return render(request, 'main/profile.html')

@@ -1,0 +1,115 @@
+/* Основные стили для страницы теста */
+.test-container {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.test-description {
+    line-height: 1.8;
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+}
+
+.test-description ul {
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+}
+
+.test-instructions {
+    border-left: 4px solid #0d6efd;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+}
+
+.test-instructions ol {
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+}
+
+.scale-description .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 1rem 1.25rem;
+}
+
+#rating {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 0.75rem;
+}
+
+#calculate-btn {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+#result-container .card-header {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+}
+
+#result-content {
+    line-height: 1.8;
+    padding: 1rem 0;
+}
+
+#action-buttons {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .test-container {
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    #action-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+
+    .list-group-item span {
+        text-align: left;
+        margin-top: 0.5rem;
+        display: block;
+    }
+}
+/* Добавьте это в конец файла */
+.btn-warning-custom {
+    background-color: #d35400;
+    border-color: #d35400;
+    color: white;
+}
+
+.btn-warning-custom:hover {
+    background-color: #b34700;
+    border-color: #b34700;
+    color: white;
+}
+
+.btn-outline-warning-custom {
+    border-color: #d35400;
+    color: #d35400;
+}
+
+.btn-outline-warning-custom:hover {
+    background-color: #d35400;
+    border-color: #d35400;
+    color: white;
+}
+
+.text-warning-custom {
+    color: #d35400 !important;
+}
+
+.list-group-item strong {
+    min-width: 40px; /* Фиксированная ширина для цифр */
+    display: inline-block;
+}

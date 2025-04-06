@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import RegisterForm
+from .forms import PsychologistProfileForm
+import logging
 
 def index(request):
     data = {
@@ -28,13 +30,64 @@ def help(request):
 def searchpsy(request):
     return render(request, 'main/searchpsy.html')
 
-@login_required
-def profile_view(request):
-    return render(request, 'main/profile.html')
+# @login_required
+# def profile_view(request):
+#     return render(request, 'main/profile.html')
+
+logger = logging.getLogger(__name__)
+
 
 @login_required
 def profile(request):
-    return render(request, 'main/profile.html')
+    # Очищаем старые сообщения при каждом запросе
+    storage = messages.get_messages(request)
+    for message in storage:
+        pass  # Просто очищаем очередь сообщений
+
+    if request.method == 'POST' and request.user.role == 'psychologist':
+        post_data = request.POST.copy()
+        if 'about' in post_data:
+            post_data['about'] = post_data['about'][:500]
+
+        form = PsychologistProfileForm(post_data, request.FILES, instance=request.user)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.contacts = form.cleaned_data['contacts']
+            user.about = form.cleaned_data['about']
+
+            if 'specializations' in form.cleaned_data:
+                user.specializations = form.cleaned_data['specializations']
+
+            user.save()
+
+            # Очищаем сессию перед новым сообщением
+            if 'profile_updated' in request.session:
+                del request.session['profile_updated']
+
+            messages.success(request, 'Профиль успешно обновлен!')
+            return redirect('profile')
+        else:
+            logger.error(f"Ошибки формы: {form.errors}")
+            # Добавляем только одно сообщение об ошибке
+            if not any(msg.message == 'Пожалуйста, исправьте ошибки в форме' for msg in messages.get_messages(request)):
+                messages.error(request, 'Пожалуйста, исправьте ошибки в форме')
+    else:
+        if request.user.role == 'psychologist':
+            form = PsychologistProfileForm(instance=request.user)
+        else:
+            form = None
+
+    if 'logout' in request.POST:
+        if 'profile_updated' in request.session:
+            del request.session['profile_updated']
+        messages.success(request, "Вы успешно вышли из системы.")
+        return redirect('login')
+
+    return render(request, 'main/profile.html', {
+        'form': form,
+        'user': request.user
+    })
 
 def login_view(request):
     if request.method == 'POST':

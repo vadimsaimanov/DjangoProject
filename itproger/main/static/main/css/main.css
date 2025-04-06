@@ -932,3 +932,11 @@ form {
         transition: none !important;
     }
 }
+@media (max-width: 576px) {
+    #editProfileModal .modal-dialog {
+        margin: 10px;
+    }
+    #editProfileModal .form-control {
+        width: 100% !important;
+    }
+}

@@ -1,0 +1,64 @@
+{% load static %}
+{% load custom_filters %}
+
+<div class="card psychologist-card mb-4">
+    <div class="card-body p-4 d-flex flex-column">
+        <div class="d-flex flex-column flex-md-row">
+            <!-- Фото профиля с жестко заданными размерами -->
+            <div class="profile-photo-container text-center mb-3">
+                <img src="{% if psychologist.photo %}{{ psychologist.photo.url }}{% else %}{% static 'main/img/default-avatar.jpg' %}{% endif %}"
+                     style="width:150px; height:150px; object-fit:cover; border-radius:10px; border:2px solid #dee2e6;"
+                     alt="Фото профиля">
+            </div>
+
+            <div class="flex-grow-1 ms-md-3">
+                <h4 class="mb-2">
+                    {% if psychologist.first_name and psychologist.last_name %}
+                      {{ psychologist.last_name }} {{ psychologist.first_name }}{% if psychologist.middle_name %} {{ psychologist.middle_name }}{% endif %}
+                    {% else %}
+                      {{ psychologist.username }}
+                    {% endif %}
+                </h4>
+                <p class="mb-1 text-muted">
+                    Возраст: {% if psychologist.age %}{{ psychologist.age }} {{ psychologist.age|pluralize_year }}{% else %}не указан{% endif %}
+                </p>
+                <p class="mb-3 text-muted">
+                    Опыт работы: {% if psychologist.experience %}{{ psychologist.experience }} {{ psychologist.experience|pluralize_year }}{% else %}не указан{% endif %}
+                </p>
+
+                <div class="profile-info">
+                    {% if psychologist.specializations %}
+                    <div class="specializations">
+                        <h6>Поддерживаю в преодолении:</h6>
+                        <ul class="list-unstyled">
+                            {% for spec in psychologist.get_specializations_display %}
+                                <li><i class="bi bi-check-circle-fill text-primary me-2"></i>{{ spec }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% if psychologist.about %}
+                    <div class="about-section mt-3">
+                        <h6>О себе:</h6>
+                        <p class="about-text mb-0">{{ psychologist.about|truncatechars:150 }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if psychologist.contacts %}
+                    <div class="contacts-section mt-3">
+                        <h6>Контакты:</h6>
+                        <p class="mb-0">{{ psychologist.contacts|truncatechars:30 }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if not hide_details %}
+        <div class="mt-auto pt-3">
+            <a href="{% url 'profile' psychologist.id %}" class="btn btn-outline-primary w-100">Подробнее</a>
+        </div>
+        {% endif %}
+    </div>
+</div>

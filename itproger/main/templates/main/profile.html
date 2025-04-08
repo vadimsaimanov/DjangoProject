@@ -10,181 +10,134 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'main/css/profile.css' %}">
+<style>
+    .profile-edit-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .specialization-checkboxes {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    .profile-actions {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <section class="w-100 px-0 py-5" style="background-color: #9de2ff; border-radius: .5rem .5rem 0 0;">
   <div class="row d-flex justify-content-center">
     <div class="col col-md-9 col-lg-7 col-xl-6">
-      <div class="card" style="border-radius: 15px;">
+      {% if not from_search %}
+      <a href="{% url 'searchpsy' %}" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Назад к поиску
+      </a>
+      {% endif %}
+
+      <div class="card psychologist-card mb-4" style="border-radius: 15px; border: none; box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);">
         <div class="card-body p-4">
-          <div class="d-flex flex-column flex-md-row">
-            <!-- Фото профиля -->
-            <div class="text-center mb-3">
-              <img src="{% if user.photo %}{{ user.photo.url }}{% else %}{% static 'main/img/default-avatar.jpg' %}{% endif %}"
-                   class="profile-photo mx-auto"
-                   alt="Фото профиля"
-                   style="width:200px;height:200px;object-fit:cover;">
-            </div>
-
-            <div class="flex-grow-1 ms-md-3">
-              <h5 class="mb-1">
-                {% if user.first_name and user.last_name %}
-                  {{ user.last_name }} {{ user.first_name }}{% if user.middle_name %} {{ user.middle_name }}{% endif %}
-                {% else %}
-                  {{ user.username }}
-                {% endif %}
-              </h5>
-              <p class="mb-2 pb-1">
-                {% if user.role == 'psychologist' %}
-                    Психолог
-                {% else %}
-                    Пользователь
-                {% endif %}
-              </p>
-
-              {% if user.role == 'psychologist' %}
-              <div class="profile-info">
-                <p><strong>Возраст:</strong> {% if user.age %}{{ user.age }} {{ user.age|pluralize_year }}{% else %}—{% endif %}</p>
-                <p><strong>Опыт работы:</strong> {% if user.experience %}{{ user.experience }} {{ user.experience|pluralize_year }}{% else %}—{% endif %}</p>
-
-                {% if user.specializations %}
-                <div class="specializations mt-2">
-                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#specializationsCollapse">
-                    <i class="bi bi-list"></i> Специализации
-                  </button>
-                  <div class="collapse mt-2" id="specializationsCollapse">
-                    <ul class="list-unstyled">
-                      {% for spec in user.specializations %}
-                        <li>{{ spec|get_spec_name }}</li>
-                      {% endfor %}
-                    </ul>
-                  </div>
+            <div class="d-flex flex-column flex-md-row">
+                <!-- Фото профиля -->
+                <div class="text-center mb-3">
+                    <img src="{% if user.photo %}{{ user.photo.url }}{% else %}{% static 'main/img/default-avatar.jpg' %}{% endif %}"
+                         class="profile-photo mx-auto"
+                         alt="Фото профиля"
+                         style="width:200px;height:200px;object-fit:cover; border-radius: 10px; border: 2px solid #dee2e6;">
                 </div>
-                {% endif %}
 
-                {% if user.contacts %}
-                <div class="contacts-section mt-2 p-2 bg-light rounded">
-                  <h6 class="mb-2">Контакты:</h6>
-                  <p class="mb-0">{{ user.contacts }}</p>
-                </div>
-                {% endif %}
+                <div class="flex-grow-1 ms-md-3">
+                    <h4 class="mb-2">
+                        {% if user.first_name and user.last_name %}
+                          {{ user.last_name }} {{ user.first_name }}{% if user.middle_name %} {{ user.middle_name }}{% endif %}
+                        {% else %}
+                          {{ user.username }}
+                        {% endif %}
+                    </h4>
+                    <p class="mb-1 text-muted">
+                        Возраст: {% if user.age %}{{ user.age }} {{ user.age|pluralize_year }}{% else %}не указан{% endif %}
+                    </p>
+                    <p class="mb-3 text-muted">
+                        Опыт работы: {% if user.experience %}{{ user.experience }} {{ user.experience|pluralize_year }}{% else %}не указан{% endif %}
+                    </p>
 
-                {% if user.about %}
-                    <div class="about-section mt-3 p-2 bg-light rounded">
-                        <h6 class="mb-2">О себе:</h6>
-                        <p class="about-text mb-0">{{ user.about }}</p>
+                    <div class="profile-info">
+                        {% if user.specializations %}
+                        <div class="specializations">
+                            <h6>С чем работает:</h6>
+                            <ul class="list-unstyled">
+                                {% for spec in user.get_specializations_display %}
+                                    <li><i class="bi bi-check-circle-fill text-primary me-2"></i>{{ spec }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% if user.about %}
+                        <div class="about-section mt-3">
+                            <h6>О себе:</h6>
+                            <p class="about-text mb-0">{{ user.about }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if user.contacts %}
+                        <div class="contacts-section mt-3">
+                            <h6>Контакты:</h6>
+                            <p class="mb-0">{{ user.contacts }}</p>
+                        </div>
+                        {% endif %}
                     </div>
-                {% endif %}
+                    <br>
 
-              </div>
-              {% endif %}
-
-              <div class="d-flex pt-1 justify-content-center">
-                {% if user.role == 'psychologist' %}
-                  <button type="button" class="btn btn-outline-primary me-1 flex-grow-1" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                    Редактировать профиль
-                  </button>
-                {% else %}
-                  <button type="button" class="btn btn-outline-primary me-1 flex-grow-1">Chat</button>
-                {% endif %}
-                <button type="button" class="btn btn-primary flex-grow-1" onclick="document.getElementById('logout-form').submit();">Выйти из аккаунта</button>
-              </div>
+                    {% if editable %}
+                    <div class="profile-actions text-center">
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="button" class="btn btn-outline-primary" id="editProfileBtn" style="min-width: 180px;">
+                              Редактировать профиль
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('logout-form').submit();" style="min-width: 180px;">
+                              Выйти из аккаунта
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Вставьте этот код вместо текущего модального окна -->
-<div id="profileEditSection" style="display: none;">
+<!-- Секция редактирования профиля -->
+<div id="profileEditSection" class="container py-4" style="display: none;">
   <div class="profile-edit-container">
-    <form id="profileForm" method="post" enctype="multipart/form-data">
+    <h3 class="text-center mb-4">Редактирование профиля</h3>
+    <form method="post" enctype="multipart/form-data" id="profileForm">
       {% csrf_token %}
-      <div class="profile-edit-content">
-        <div class="row g-3">
-          <!-- Фото профиля -->
-          <div class="col-md-4 text-center">
-            <img src="{% if user.photo %}{{ user.photo.url }}{% else %}{% static 'main/img/default-avatar.jpg' %}{% endif %}"
-                 class="profile-photo-preview img-thumbnail mb-2"
-                 style="width:150px;height:150px;object-fit:cover;"
-                 alt="Фото профиля">
-            <input type="file" class="form-control mx-auto w-75" id="id_photo" name="photo" accept="image/*">
-            <div class="form-text">Рекомендуемый размер: 300x300 пикселей</div>
-          </div>
-
-          <!-- Поля формы -->
-          <div class="col-md-8">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label for="id_first_name" class="form-label">Имя*</label>
-                <input type="text" class="form-control" id="id_first_name" name="first_name"
-                       value="{{ form.first_name.value|default_if_none:'' }}" required>
-              </div>
-              <div class="col-md-6">
-                <label for="id_last_name" class="form-label">Фамилия*</label>
-                <input type="text" class="form-control" id="id_last_name" name="last_name"
-                       value="{{ form.last_name.value|default_if_none:'' }}" required>
-              </div>
-              <div class="col-md-6">
-                <label for="id_middle_name" class="form-label">Отчество</label>
-                <input type="text" class="form-control" id="id_middle_name" name="middle_name"
-                       value="{{ form.middle_name.value|default_if_none:'' }}">
-              </div>
-              <div class="col-md-6">
-                <label for="id_age" class="form-label">Возраст*</label>
-                <input type="number" class="form-control" id="id_age" name="age"
-                       value="{{ form.age.value|default_if_none:'' }}" required>
-              </div>
-              <div class="col-md-6">
-                <label for="id_experience" class="form-label">Опыт работы*</label>
-                <input type="number" class="form-control" id="id_experience" name="experience"
-                       value="{{ form.experience.value|default_if_none:'' }}" required>
-              </div>
-              <div class="col-md-6">
-                <label for="id_gender" class="form-label">Пол*</label>
-                <select class="form-select" id="id_gender" name="gender" required>
-                  {% for value, label in form.fields.gender.choices %}
-                    <option value="{{ value }}" {% if form.gender.value == value %}selected{% endif %}>{{ label }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="col-12">
-                <label class="form-label">Специализации*</label>
-                <div class="specialization-checkboxes">
-                  {% for value, label in form.fields.specializations.choices %}
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" name="specializations"
-                             id="spec_{{ forloop.counter }}" value="{{ value }}"
-                             {% if value in form.specializations.value %}checked{% endif %}>
-                      <label class="form-check-label" for="spec_{{ forloop.counter }}">{{ label }}</label>
-                    </div>
-                  {% endfor %}
-                </div>
-              </div>
-              <div class="col-12">
-                <label for="id_contacts" class="form-label">Контакты*</label>
-                <input type="text" class="form-control" id="id_contacts" name="contacts"
-                       value="{{ form.contacts.value|default_if_none:'' }}" required>
-                <div class="form-text">Укажите, как с вами можно связаться (телефон, email, мессенджеры)</div>
-              </div>
-              <div class="mb-3">
-                <label for="id_about" class="form-label">О себе</label>
-                <textarea class="form-control" id="id_about" name="about" rows="5"
-                          maxlength="500">{{ form.about.value|default_if_none:'' }}</textarea>
-                <div class="form-text">
-                    <span id="about-counter">{{ form.about.value|default_if_none:''|length }}</span>/500 символов
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="row g-3">
+        <!-- Фото профиля -->
+        <div class="col-md-4 text-center">
+          <img src="{% if user.photo %}{{ user.photo.url }}{% else %}{% static 'main/img/default-avatar.jpg' %}{% endif %}"
+               class="img-thumbnail mb-3" id="photoPreview" style="width:200px;height:200px;object-fit:cover; border-radius: 10px;">
+          <input type="file" class="form-control" name="photo" id="id_photo" accept="image/*" onchange="previewPhoto(this)">
+        </div>
+        <div class="col-md-8">
+          {{ form.as_p }}
         </div>
       </div>
-      <div class="profile-edit-footer mt-3 d-flex justify-content-center">
-        <button type="button" class="btn btn-secondary me-2" onclick="toggleEditForm(false)">Отмена</button>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
+      <div class="d-flex justify-content-center mt-4 gap-3">
+        <button type="button" class="btn btn-outline-secondary px-4 py-2" id="cancelEditBtn" style="min-width: 120px;">Отмена</button>
+        <button type="submit" class="btn btn-primary px-4 py-2" style="min-width: 120px;">Сохранить</button>
       </div>
     </form>
   </div>
@@ -193,30 +146,39 @@
 {% if messages %}
 <div class="container mt-3">
     {% for message in messages %}
-        {% if forloop.first %}  <!-- Показываем только первое сообщение -->
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        {% endif %}
     {% endfor %}
-</div>
-{% endif %}
-
-{% if form.errors %}
-<div class="alert alert-danger">
-  <strong>Ошибки в форме:</strong>
-  <ul>
-    {% for field, errors in form.errors.items %}
-      {% for error in errors %}
-        <li>{{ field }}: {{ error }}</li>
-      {% endfor %}
-    {% endfor %}
-  </ul>
 </div>
 {% endif %}
 
 <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
     {% csrf_token %}
 </form>
+
+<script>
+function previewPhoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('photoPreview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+document.getElementById('editProfileBtn').addEventListener('click', function() {
+    document.getElementById('profileEditSection').style.display = 'block';
+    window.scrollTo({
+        top: document.getElementById('profileEditSection').offsetTop,
+        behavior: 'smooth'
+    });
+});
+
+document.getElementById('cancelEditBtn').addEventListener('click', function() {
+    document.getElementById('profileEditSection').style.display = 'none';
+});
+</script>
 {% endblock %}

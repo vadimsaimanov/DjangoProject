@@ -1,11 +1,149 @@
 {% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_filters %}
 
 {% block title %}Поиск психологов{% endblock %}
 
-{% block content %}
-	<div class="features">
-        <h1>Поиск психологов</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit, totam.</p>
-    </div>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'main/css/searchpsy.css' %}">
 {% endblock %}
 
+{% block content %}
+<section class="search-section py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <h1 class="text-center mb-4">Поиск психологов</h1>
+
+                <!-- Форма поиска -->
+                <form method="get" class="search-form mb-4">
+                    <div class="form-container">
+                        <!-- Поле поиска -->
+                        <div class="form-group">
+                            <input type="text" class="form-control search-input" name="q" value="{{ search_query }}"
+                                   placeholder="Поиск по ФИО">
+                        </div>
+
+                        <!-- Сортировка -->
+                        <div class="form-group">
+                            <select class="form-select wide-select" name="sort">
+                                <option value="name_asc" {% if sort_by == 'name_asc' %}selected{% endif %}>По имени (А-Я)</option>
+                                <option value="name_desc" {% if sort_by == 'name_desc' %}selected{% endif %}>По имени (Я-А)</option>
+                                <option value="exp_asc" {% if sort_by == 'exp_asc' %}selected{% endif %}>По опыту (↑)</option>
+                                <option value="exp_desc" {% if sort_by == 'exp_desc' %}selected{% endif %}>По опыту (↓)</option>
+                            </select>
+                        </div>
+
+                        <!-- Фильтр по полу -->
+                        <div class="form-group">
+                            <select class="form-select wide-select" name="gender">
+                                <option value="">Любой пол</option>
+                                <option value="m" {% if request.GET.gender == 'm' %}selected{% endif %}>Мужской</option>
+                                <option value="f" {% if request.GET.gender == 'f' %}selected{% endif %}>Женский</option>
+                            </select>
+                        </div>
+
+                        <!-- Кнопка фильтров -->
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle filter-btn" type="button"
+                                        id="specializationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Меня беспокоит
+                                </button>
+                                <ul class="dropdown-menu specializations-menu p-3" aria-labelledby="specializationsDropdown">
+                                    <div class="row">
+                                        {% for value, label in SPECIALIZATION_CHOICES %}
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="specialization"
+                                                       value="{{ value }}" id="spec-{{ value }}"
+                                                       {% if value in selected_specializations %}checked{% endif %}>
+                                                <label class="form-check-label" for="spec-{{ value }}">
+                                                    {{ label }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Кнопка сброса -->
+                        <div class="form-group">
+                            <a href="?reset=1" class="btn btn-outline-danger reset-btn">Сбросить фильтры</a>
+                        </div>
+
+                        <!-- Кнопка поиска -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary search-btn">
+                                <i class="bi bi-search me-1"></i> Поиск
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Результаты поиска -->
+                {% if page_obj|length == 1 %}
+                    <!-- Специальный контейнер для одной карточки -->
+                    <div class="single-card-container">
+                        <div class="col-12 col-md-10 col-lg-8">
+                            {% include 'main/psychologist_card.html' with psychologist=page_obj.0 %}
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Обычное отображение для нескольких карточек -->
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for psychologist in page_obj %}
+                        <div class="col">
+                            {% include 'main/psychologist_card.html' with psychologist=psychologist %}
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                Психологи не найдены. Попробуйте изменить параметры поиска.
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Пагинация -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mt-4">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1&q={{ search_query }}&sort={{ sort_by }}&gender={{ request.GET.gender }}{% for spec in selected_specializations %}&specialization={{ spec }}{% endfor %}">Первая</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&sort={{ sort_by }}&gender={{ request.GET.gender }}{% for spec in selected_specializations %}&specialization={{ spec }}{% endfor %}">Назад</a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}&q={{ search_query }}&sort={{ sort_by }}&gender={{ request.GET.gender }}{% for spec in selected_specializations %}&specialization={{ spec }}{% endfor %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&sort={{ sort_by }}&gender={{ request.GET.gender }}{% for spec in selected_specializations %}&specialization={{ spec }}{% endfor %}">Вперед</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{ search_query }}&sort={{ sort_by }}&gender={{ request.GET.gender }}{% for spec in selected_specializations %}&specialization={{ spec }}{% endfor %}">Последняя</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

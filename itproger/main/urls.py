@@ -6,7 +6,9 @@ urlpatterns = [
     path('', views.index, name='home'),  # Главная страница
     path('about/', views.about, name='about'),  # Страница "О нас"
     path('register/', views.register, name='register'),
-    path('profile/', views.profile, name='profile'),  # Страница профиля
+    # Два отдельных пути для профиля:
+    path('profile/', views.current_user_profile, name='current_profile'),  # Для текущего пользователя
+    path('profile/<int:user_id>/', views.profile, name='profile'),  # Для просмотра других профилей
     path('accounts/logout/', custom_logout, name='logout'),
     path('test/', views.test, name='test'),
     path('help/', views.help, name='help'),

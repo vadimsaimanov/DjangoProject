@@ -9,7 +9,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),  # Подключаем маршруты приложения main
     path('news/', include('news.urls')),  # Подключаем маршруты приложения news
-    path('ormsql/', include('ormsql.urls')),  # Подключаем маршруты приложения ormsql
     path('accounts/', include('django.contrib.auth.urls')),  # Встроенные маршруты для аутентификации
     path('accounts/login/', LoginView.as_view(template_name='registration/login.html'), name='login'),  # Кастомный маршрут для логина
     path('accounts/logout/', LogoutView.as_view(next_page='login'), name='logout'),  # Кастомный маршрут для логаута

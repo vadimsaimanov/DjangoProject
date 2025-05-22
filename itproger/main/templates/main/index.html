@@ -1,28 +1,40 @@
 {% extends 'main/layout.html' %}
+{% load static %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}Главная{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'main/css/home.css' %}">
+{% endblock %}
 
 {% block content %}
-    <div class="features">
-        <h1>{{ title }}</h1> <!--вывод информации из файла views.py внутри шаблона-->
-{#        {% if request.user.is_authenticated %}#}
-{#        <h3>{{ request.user }}, добро пожаловать!</h3>#}
-{#            <a class="navbar-brand" href="{% url 'logout' %}">Выйти из аккаунта</a>#}
-{#            {% else  %}#}
-{#            <a class="navbar-brand" href="{% url 'login' %}">Войти в аккаунт</a>#}
-{#        {% endif %}#}
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit, totam.</p>
-        <button class="btn btn-warning">На страницу про нас</button> <!--bootstrap подключили стиль кнопки-->
-{#        {{ values }} <!--выводим список по названию переменной из data из views.py, ниже пишем через цикл перебираем список-->#}
-        {% for el in values %}
-            {% if el == 'Hello' %}
-                {% filter upper %} <!--ФИЛЬТР все символы приводит в верхний регистр, lower в нижний, фильтр можно к чему угодно применять-->
-                    <p>{{ el | upper }}</p> <!--фильтр можно применять и конкретно к элементу, но не к тексту-->
-                {% endfilter %}
-            {% endif %}
-        {% endfor %}
+<section class="home-section py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <h1 class="text-center mb-4">Добро пожаловать на наш сайт психологической поддержки</h1>
+                <p class="text-center lead">Мы здесь, чтобы помочь вам справиться с жизненными трудностями и улучшить ваше эмоциональное благополучие.</p>
 
-        {{ obj.age }} <!--обращаемся к определенному списку к конкретному ключу из data из views.py, выводим значение-->
+                <img src="{% static 'main/img/PsyHelp.jpg' %}" alt="PsyHelp" style="width: 100%; max-width: 600px; height: auto;">
+
+                <div class="features mt-5">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <h3>Поиск психологов</h3>
+                            <p>Найдите специалиста, который подходит именно вам. Используйте наши фильтры для поиска по специализации, опыту и полу.</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h3>Статьи и советы</h3>
+                            <p>Читайте полезные статьи от наших психологов. Узнайте больше о психологическом здоровье и методах самопомощи.</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h3>Тест на эмоциональное благополучие</h3>
+                            <p>Пройдите наш тест, чтобы оценить свое эмоциональное состояние и получить рекомендации по его улучшению.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-{#    {% include 'main/test.html' %} <!--подключение кода из другого html файла-->#}
+</section>
 {% endblock %}

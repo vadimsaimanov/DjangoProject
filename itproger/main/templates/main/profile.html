@@ -58,16 +58,17 @@
                 <div class="flex-grow-1 ms-md-3">
                     <h4 class="mb-2">
                         {% if user.first_name and user.last_name %}
-                          {{ user.last_name }} {{ user.first_name }}{% if user.middle_name %} {{ user.middle_name }}{% endif %}
+                          {{ user.last_name }} {{ user.first_name }}
+                        {% if user.middle_name %} {{ user.middle_name }}{% endif %}
                         {% else %}
                           {{ user.username }}
                         {% endif %}
                     </h4>
                     <p class="mb-1 text-muted">
-                        Возраст: {% if user.age %}{{ user.age }} {{ user.age|pluralize_year }}{% else %}не указан{% endif %}
+                        Возраст: {% if user.age %}{{ user.age }} {% else %}не указан{% endif %}
                     </p>
                     <p class="mb-3 text-muted">
-                        Опыт работы: {% if user.experience %}{{ user.experience }} {{ user.experience|pluralize_year }}{% else %}не указан{% endif %}
+                        Опыт работы: {% if user.experience %}{{ user.experience }} {% else %}не указан{% endif %}
                     </p>
 
                     <div class="profile-info">

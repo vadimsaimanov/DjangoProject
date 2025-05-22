@@ -1,18 +1,85 @@
 {% extends 'main/layout.html' %}
+{% load static %}
 
 {% block title %}Форма по редактированию статьи{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'news/css/news.css' %}">
+{% endblock %}
+
 {% block content %}
-    <div class="features">
-        <h1>Форма по редактированию статьи</h1> <!--вывод информации из файла views.py внутри шаблона-->
-        <form method="post"> <!--обрабатываем форму прямо на этой странице методом create-->
-            {% csrf_token %} <!--токен для защиты от межсайтовой подделки запроса CSRF-->
-            {{ form.title }}<br>
-            {{ form.anons }}<br>
-            {{ form.full_text }}<br>
-            {{ form.date }}<br>
-            <span>{{ error }}</span> <!--если нет ошибки, то пустой символ выодится, который не видно, если ошибка есть выводиться сообщение об ошибке-->
-            <button class="btn btn-success" type="submit">Редактировать статью</button>
+<div class="features">
+    <h1>Форма по редактированию статьи</h1>
+    <div class="update-form">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Заголовок:</label>
+                {{ form.title }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.anons.id_for_label }}">Анонс:</label>
+                {{ form.anons }}
+                <span class="char-counter"><span id="anons-counter">0</span>/100</span>
+            </div>
+
+            {% if form.instance.photo %}
+            <div class="current-photo">
+                <img src="{{ form.instance.photo.url }}" alt="Текущее фото" style="max-height: 200px;">
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.photo.id_for_label }}">Фотография:</label>
+                {{ form.photo }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.full_text.id_for_label }}">Полный текст:</label>
+                {{ form.full_text }}
+                <span class="char-counter"><span id="text-counter">0</span>/10000</span>
+            </div>
+
+            <div class="form-group tags-container">
+                <label>Теги статьи:</label>
+                {{ form.tags }}
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-success btn-lg" type="submit">Обновить статью</button>
+            </div>
         </form>
     </div>
+</div>
+
+<script>
+function countChars(field, counterId) {
+    const counter = document.getElementById(counterId);
+    if (counter) {
+        counter.textContent = field.value.length;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const anonsField = document.querySelector('#id_anons');
+    const textField = document.querySelector('#id_full_text');
+
+    if (anonsField) {
+        anonsField.addEventListener('input', function() {
+            countChars(this, 'anons-counter');
+        });
+        countChars(anonsField, 'anons-counter');
+    }
+
+    if (textField) {
+        textField.addEventListener('input', function() {
+            countChars(this, 'text-counter');
+        });
+        countChars(textField, 'text-counter');
+    }
+});
+</script>
+
 {% endblock %}

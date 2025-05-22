@@ -1,0 +1,48 @@
+<div class="card article-card mb-4">
+    {% if article.photo %}
+    <img src="{{ article.photo.url }}" class="article-thumbnail" alt="{{ article.title }}">
+    {% endif %}
+
+    <div class="card-body p-4 d-flex flex-column">
+        <div class="flex-grow-1">
+            <h4 class="mb-3">{{ article.title }}</h4>
+            <p class="mb-3 text-muted">{{ article.anons|truncatechars:120 }}</p>
+
+            {% if article.tags %}
+            <div class="article-tags mb-3">
+                {% for tag in article.tags %}
+                    {% for value, label in tag_choices %}
+                        {% if value == tag %}
+                            <span class="badge">{{ label }}</span>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="article-footer">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <small class="text-muted">{{ article.date|date:"d.m.Y" }}</small>
+                <div class="article-stats">
+                    <span class="me-3" title="Просмотры">
+                        <i class="bi bi-eye"></i> {{ article.views }}
+                    </span>
+                    <span title="Лайки">
+                        <i class="bi bi-heart"></i> {{ article.likes_count }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <small>
+                    Автор:
+                    <a href="{% url 'profile' article.author.id %}" class="author-link">
+                        {{ article.author.get_full_name }}
+                    </a>
+                </small>
+                <a href="{% url 'news-detail' article.id %}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+            </div>
+        </div>
+    </div>
+</div>

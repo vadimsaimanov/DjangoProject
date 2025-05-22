@@ -1,12 +1,43 @@
 {% extends 'main/layout.html' %}
+{% load static %}
 
-{% block title %}Про нас{% endblock %}
-<!-- Директива % block %} используется для определения блоков содержимого в шаблонах, которые могут быть переопределены или расширены в дочерних шаблонах. -->
-{% block content %}
-	<div class="features">
-        <h1>Про нас</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit, totam.</p>
-        <button class="btn btn-warning">Просто нажми</button> <!--bootstrap подключили стиль кнопки-->
-    </div>
+{% block title %}О нас{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'main/css/about.css' %}">
 {% endblock %}
 
+{% block content %}
+<section class="about-section py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <h1 class="text-center mb-4">О нас</h1>
+                <p class="text-center lead">Мы команда профессионалов, стремящихся помочь людям улучшить качество своей жизни через психологическую поддержку.</p>
+
+                <!-- Добавление изображения с инлайн стилями -->
+                <img src="{% static 'main/img/about.jpg' %}" alt="About Us" style="width: 100%; max-width: 600px; height: auto; display: block; margin: 20px auto;">
+
+                <div class="mission mt-5">
+                    <h2>Наша миссия</h2>
+                    <p>Наша миссия — сделать психологическую помощь доступной для каждого. Мы верим, что каждый человек заслуживает поддержки и понимания.</p>
+                </div>
+
+                <div class="values mt-4">
+                    <h2>Наши ценности</h2>
+                    <ul>
+                        <li>Профессионализм: Мы придерживаемся высоких стандартов в нашей работе.</li>
+                        <li>Конфиденциальность: Ваша безопасность и приватность — наш приоритет.</li>
+                        <li>Эмпатия: Мы заботимся о каждом нашем клиенте и стремимся понять его уникальные потребности.</li>
+                    </ul>
+                </div>
+
+                <div class="team mt-4">
+                    <h2>Наша команда</h2>
+                    <p>Наша команда состоит из опытных психологов, которые готовы помочь вам справиться с любыми жизненными трудностями.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

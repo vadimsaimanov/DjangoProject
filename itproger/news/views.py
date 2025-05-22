@@ -1,37 +1,91 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
-from .models import Articles, Like, Comment
+from .models import Articles, Like, Comment, TAG_CHOICES
 from .forms import ArticlesForm, CommentForm
 from django.views.generic import DetailView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from .decorators import psychologist_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import F, Prefetch
+from django.db.models import F, Prefetch, Q
 from .forms import SearchForm
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.conf import settings
+from django.urls import reverse
+
+
 
 def news_home(request):
-    search_query = request.GET.get('q', '')
+    if 'reset' in request.GET:
+        return HttpResponseRedirect(reverse('news_home'))
+
+    search_query = request.GET.get('q', '').strip()
+    selected_tags = request.GET.getlist('tags')
+    sort_by = request.GET.get('sort', 'date_desc')
+
+    articles = Articles.objects.all()
+
+    # Поиск по названию
     if search_query:
-        news = Articles.objects.filter(title__icontains=search_query)
-    else:
-        news = Articles.objects.order_by('-date')
-    return render(request, 'news/news_home.html', {'news': news, 'search_query': search_query})
+        articles = articles.filter(title__icontains=search_query)
+
+    # Фильтрация по тегам
+    if selected_tags:
+        query = Q()
+        for tag in selected_tags:
+            query |= Q(tags__contains=[tag])
+        articles = articles.filter(query)
+
+    # Сортировка
+    if sort_by == 'date_asc':
+        articles = articles.order_by('date')
+    elif sort_by == 'date_desc':
+        articles = articles.order_by('-date')
+    elif sort_by == 'views_asc':
+        articles = articles.order_by('views')
+    elif sort_by == 'views_desc':
+        articles = articles.order_by('-views')
+    elif sort_by == 'likes_asc':
+        articles = articles.order_by('likes_count')
+    elif sort_by == 'likes_desc':
+        articles = articles.order_by('-likes_count')
+
+    paginator = Paginator(articles, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'selected_tags': selected_tags,
+        'sort_by': sort_by,
+        'tag_choices': TAG_CHOICES
+    }
+    return render(request, 'news/news_home.html', context)
+
 
 class NewsDetailView(DetailView):
     model = Articles
     template_name = 'news/details_view.html'
     context_object_name = 'article'
 
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        # Увеличиваем счетчик просмотров
+        obj.views = F('views') + 1
+        obj.save(update_fields=['views'])
+        obj.refresh_from_db()
+        return obj
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comment_form'] = CommentForm()
 
-        # Получаем все корневые комментарии с предзагрузкой ответов
+        # Получаем все корневые комментарии
         comments = self.object.comments.filter(parent__isnull=True) \
             .select_related('author') \
             .prefetch_related('likes', 'dislikes', 'replies__author', 'replies__likes', 'replies__dislikes')
@@ -92,8 +146,6 @@ class NewsDetailView(DetailView):
         context['comment_form'] = form
         return self.render_to_response(context)
 
-# Остальной код представлений остается без изменений
-
 class AuthorOrAdminRequiredMixin:
     """
     Миксин для проверки, что пользователь является автором статьи или администратором.
@@ -122,25 +174,25 @@ class NewsDeleteView(AuthorOrAdminRequiredMixin, DeleteView):
 @psychologist_required
 def create(request):
     error = ''
-    if request.method == 'POST': #метод передачи данных post, исполняется когда жмем на кнопку добавить
-        form = ArticlesForm(request.POST) #здесь хранятся все дданные получченные из формы которую заполнил пользователь
-        if form.is_valid(): #проверяем, являются ли данные корректно заполненными, тогда сохраняем
-            article = form.save(commit=False)  # Создаем объект статьи, но не сохраняем в базу
-            article.author = request.user  # Устанавливаем автора статьи
-            article.save()  # Теперь сохраняем статью в базу
-            return redirect('/news') #возврат на страницу со всеми новостями
+    if request.method == 'POST':
+        form = ArticlesForm(request.POST, request.FILES)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.author = request.user
+            article.date = timezone.now()
+            article.tags = form.cleaned_data['tags']
+            article.save()
+            return redirect('news-detail', pk=article.pk)
         else:
             error = 'Форма неверно заполнена'
-
     else:
-        form = ArticlesForm()#создали объект класса
+        form = ArticlesForm()
 
-    data = {
+    return render(request, 'news/create.html', {
         'form': form,
-        'eror': error
-    }
-
-    return render(request, 'news/create.html', data)
+        'error': error,
+        'tag_choices': TAG_CHOICES
+    })
 
 
 @csrf_exempt

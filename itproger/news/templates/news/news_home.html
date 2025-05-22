@@ -1,42 +1,181 @@
 {% extends 'main/layout.html' %}
+{% load static %}
+{% load custom_filters %}
 
-{% block title %}Новости на сайте{% endblock %}
+{% block title %}Поиск статей{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'news/css/news.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="features">
-    <h1>Новости на сайте</h1>
+<section class="search-section py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <h1 class="text-center mb-4">Поиск статей</h1>
 
-    <!-- Форма поиска -->
-    <form method="get" action="{% url 'news_home' %}" class="d-flex">
-        <input type="text" name="q" placeholder="Поиск статей" value="{{ search_query }}" class="form-control me-2">
-        <button type="submit" class="btn btn-warning">Найти</button>
-    </form>
+                <!-- Форма поиска -->
+                <form method="get" class="search-form mb-4">
+                    <div class="form-container">
+                        <!-- Поле поиска -->
+                        <div class="form-group">
+                            <input type="text" class="form-control search-input" name="q" value="{{ search_query }}"
+                                   placeholder="Поиск по названию">
+                        </div>
 
-    <!-- Сообщение о результатах поиска -->
-    {% if search_query %}
-        <p>Результаты поиска для: <strong>{{ search_query }}</strong></p>
-    {% endif %}
+                        <!-- Сортировка -->
+                        <div class="form-group">
+                            <select class="form-select wide-select" name="sort">
+                                <option value="date_desc" {% if sort_by == 'date_desc' %}selected{% endif %}>Сначала новые</option>
+                                <option value="date_asc" {% if sort_by == 'date_asc' %}selected{% endif %}>Сначала старые</option>
+                                <option value="views_desc" {% if sort_by == 'views_desc' %}selected{% endif %}>По популярности (↓)</option>
+                                <option value="views_asc" {% if sort_by == 'views_asc' %}selected{% endif %}>По популярности (↑)</option>
+                                <option value="likes_desc" {% if sort_by == 'likes_desc' %}selected{% endif %}>По лайкам (↓)</option>
+                                <option value="likes_asc" {% if sort_by == 'likes_asc' %}selected{% endif %}>По лайкам (↑)</option>
+                            </select>
+                        </div>
 
-    <!-- Список статей -->
-    {% if news %}
-        {% for el in news %}
-        <div class="alert alert-warning">
-            <h3>{{ el.title }}</h3>
-            <p>{{ el.anons }}</p>
-            <div class="d-flex align-items-center gap-3">
-                <a href="{% url 'news-detail' el.id %}" class="btn btn-warning">Читать</a>
-                <span class="text-muted" title="Просмотры">
-                    <i class="bi bi-eye"></i> {{ el.views }}
-                </span>
-                <button class="btn-like btn p-0" data-article-id="{{ el.id }}">
-                    <i class="bi {% if request.user in el.likes.all %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
-                    <span class="likes-count">{{ el.likes_count }}</span>
-                </button>
+                        <!-- Кнопка фильтров -->
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle filter-btn" type="button"
+                                        id="tagsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Темы статей
+                                </button>
+                                <ul class="dropdown-menu specializations-menu p-3" aria-labelledby="tagsDropdown">
+                                    <div class="row">
+                                        {% for value, label in tag_choices %}
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="tags"
+                                                       value="{{ value }}" id="tag-{{ value }}"
+                                                       {% if value in selected_tags %}checked{% endif %}>
+                                                <label class="form-check-label" for="tag-{{ value }}">
+                                                    {{ label }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Кнопка сброса -->
+                        <div class="form-group">
+                            <a href="{% url 'news_home' %}" class="btn btn-outline-danger reset-btn">Сбросить фильтры</a>
+                        </div>
+
+                        <!-- Кнопка поиска -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary search-btn">
+                                <i class="bi bi-search me-1"></i> Поиск
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Результаты поиска -->
+                {% if page_obj|length == 1 %}
+                    <!-- Специальный контейнер для одной карточки -->
+                    <div class="single-card-container">
+                        <div class="col-12 col-md-10 col-lg-8">
+                            {% include 'news/article_card.html' with article=page_obj.0 %}
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Обычное отображение для нескольких карточек -->
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for article in page_obj %}
+                        <div class="col">
+                            {% include 'news/article_card.html' with article=article %}
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                Статьи не найдены. Попробуйте изменить параметры поиска.
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Пагинация -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mt-4">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1&q={{ search_query }}&sort={{ sort_by }}{% for tag in selected_tags %}&tags={{ tag }}{% endfor %}">Первая</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&sort={{ sort_by }}{% for tag in selected_tags %}&tags={{ tag }}{% endfor %}">Назад</a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}&q={{ search_query }}&sort={{ sort_by }}{% for tag in selected_tags %}&tags={{ tag }}{% endfor %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&sort={{ sort_by }}{% for tag in selected_tags %}&tags={{ tag }}{% endfor %}">Вперед</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{ search_query }}&sort={{ sort_by }}{% for tag in selected_tags %}&tags={{ tag }}{% endfor %}">Последняя</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
             </div>
         </div>
-        {% endfor %}
-    {% else %}
-        <p>Статей не найдено</p>
-    {% endif %}
-</div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработчик лайков
+    document.querySelectorAll('.btn-like').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const articleId = this.dataset.articleId;
+
+            try {
+                const response = await fetch(`/news/${articleId}/like/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                });
+
+                const data = await response.json();
+
+                const icon = this.querySelector('i');
+                const countSpan = this.querySelector('.likes-count');
+
+                if (icon) {
+                    icon.classList.toggle('bi-heart-fill', data.liked);
+                    icon.classList.toggle('bi-heart', !data.liked);
+                    icon.classList.toggle('text-danger', data.liked);
+                }
+
+                if (countSpan) {
+                    countSpan.textContent = data.likes_count;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

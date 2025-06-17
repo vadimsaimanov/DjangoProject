@@ -55,6 +55,7 @@ Python 3.x
 Инструкция по запуску
 Клонировать репозиторий:
 git clone https://github.com/vadimsaimanov/DjangoProject.git
+
 cd DjangoProject
 
 Примените миграции:
